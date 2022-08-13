@@ -18,7 +18,7 @@
 
 // Chakra imports
 import { ChakraProvider, Portal, useDisclosure } from "@chakra-ui/react";
-import Configurator from "components/Configurator/Configurator";
+// import Dashboard from "views/Dashboard/Dashboard.js";
 import Footer from "components/Footer/Footer.js";
 // Layout components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
@@ -33,6 +33,7 @@ import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
+
 export default function Dashboard(props) {
   const { ...rest } = props;
   // states and functions
@@ -111,55 +112,6 @@ export default function Dashboard(props) {
   };
   // const { isOpen, onOpen, onClose } = useDisclosure();
   
-  // ##### Solana Wallet Start #####
-  // State
-  const [walletAddress, setWalletAddress] = useState(null);
-  const [inputValue, setInputValue] = useState('');
-  const [gifList, setGifList] = useState([]);
-   
-  // Actions
-  const checkIfWalletIsConnected = async () => {
-    try {
-      const { solana } = window;
-  
-      if (solana) {
-        if (solana.isPhantom) {
-          console.log('Phantom wallet found!');
-          const response = await solana.connect({ onlyIfTrusted: true });
-          console.log(
-            'Connected with Public Key:',
-            response.publicKey.toString()
-          );
-  
-          /*
-           * Set the user's publicKey in state to be used later!
-           */
-          setWalletAddress(response.publicKey.toString());
-        }
-      } else {
-        alert('Solana object not found! Get a Phantom Wallet 👻');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  /*
-   * Let's define this method so our code doesn't break.
-   * We will write the logic for this next!
-   */
-  const connectWallet = async () => {
-    const { solana } = window;
-  
-    if (solana) {
-      const response = await solana.connect();
-      console.log('Connected with Public Key:', response.publicKey.toString());
-      setWalletAddress(response.publicKey.toString());
-    }
-  };
-
-  
-  // ##### Solana Wallet End #####
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
   return (
@@ -170,7 +122,7 @@ export default function Dashboard(props) {
           base: "100%",
           md: "calc(100% - 5px)",
         }}>
-        <Portal>
+        {/* <Portal>
           <AdminNavbar
             // onOpen={onOpen}
             openWallet={connectWallet}
@@ -180,7 +132,7 @@ export default function Dashboard(props) {
             fixed={fixed}
             {...rest}
           />
-        </Portal>
+        </Portal> */}
         {getRoute() ? (
           <PanelContent>
             <PanelContainer>
