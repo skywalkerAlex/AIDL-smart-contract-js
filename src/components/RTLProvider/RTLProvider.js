@@ -16,21 +16,16 @@
 
 */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import AdminLayout from "layouts/Admin.js";
-// import AuthLayout from "layouts/Auth.js";
-// import RTLLayout from "layouts/RTL.js";
-
-ReactDOM.render(
-  <HashRouter>
-    <Switch>
-      {/* <Route path={`/auth`} component={AuthLayout} /> */}
-      <Route path={`/admin`} component={AdminLayout} />
-      {/* <Route path={`/rtl`} component={RTLLayout} /> */}
-      <Redirect from={`/`} to='/admin/dashboard' />
-    </Switch>
-  </HashRouter>,
-  document.getElementById("root")
-  );
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import rtl from "stylis-plugin-rtl";
+// NB: A unique `key` is important for it to work!
+const options = {
+  rtl: { key: "css-ar", stylisPlugins: [rtl] },
+  ltr: { key: "css-en" },
+};
+export function RtlProvider({ children }) {
+  const dir = document.documentElement.dir == "ar" ? "rtl" : "ltr";
+  const cache = createCache(options[dir]);
+  return <CacheProvider value={cache} children={children} />;
+}

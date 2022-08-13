@@ -17,20 +17,17 @@
 */
 
 import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import AdminLayout from "layouts/Admin.js";
-// import AuthLayout from "layouts/Auth.js";
-// import RTLLayout from "layouts/RTL.js";
+import { Flex } from "@chakra-ui/react";
 
-ReactDOM.render(
-  <HashRouter>
-    <Switch>
-      {/* <Route path={`/auth`} component={AuthLayout} /> */}
-      <Route path={`/admin`} component={AdminLayout} />
-      {/* <Route path={`/rtl`} component={RTLLayout} /> */}
-      <Redirect from={`/`} to='/admin/dashboard' />
-    </Switch>
-  </HashRouter>,
-  document.getElementById("root")
+export function Separator(props) {
+  const { variant, children, ...rest } = props;
+  return (
+    <Flex
+      h='1px'
+      w='100%'
+      bg='linear-gradient(90deg, rgba(224, 225, 226, 0) 0%, #E0E1E2 47.22%, rgba(224, 225, 226, 0.15625) 94.44%)'
+      {...rest}>
+      {children}
+    </Flex>
   );
+}

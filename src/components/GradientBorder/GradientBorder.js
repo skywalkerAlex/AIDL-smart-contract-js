@@ -17,20 +17,20 @@
 */
 
 import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import AdminLayout from "layouts/Admin.js";
-// import AuthLayout from "layouts/Auth.js";
-// import RTLLayout from "layouts/RTL.js";
+import { Flex } from "@chakra-ui/react";
 
-ReactDOM.render(
-  <HashRouter>
-    <Switch>
-      {/* <Route path={`/auth`} component={AuthLayout} /> */}
-      <Route path={`/admin`} component={AdminLayout} />
-      {/* <Route path={`/rtl`} component={RTLLayout} /> */}
-      <Redirect from={`/`} to='/admin/dashboard' />
-    </Switch>
-  </HashRouter>,
-  document.getElementById("root")
+export default function GradientBorder(props) {
+  const { variant, children, ...rest } = props;
+  return (
+    <Flex
+      p='2px'
+      justify='center'
+      align='center'
+      bg='radial-gradient(69.43% 69.43% at 50% 50%, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%),
+      radial-gradient(60% 51.57% at 50% 50%, #582CFF 0%, rgba(88, 44, 255, 0) 100%),
+      radial-gradient(54.8% 53% at 50% 50%, #151515 0%, rgba(21, 21, 21, 0) 100%)'
+      {...rest}>
+      {children}
+    </Flex>
   );
+}

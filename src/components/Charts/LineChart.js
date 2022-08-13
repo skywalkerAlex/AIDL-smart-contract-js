@@ -17,20 +17,38 @@
 */
 
 import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import AdminLayout from "layouts/Admin.js";
-// import AuthLayout from "layouts/Auth.js";
-// import RTLLayout from "layouts/RTL.js";
+import ReactApexChart from "react-apexcharts";
 
-ReactDOM.render(
-  <HashRouter>
-    <Switch>
-      {/* <Route path={`/auth`} component={AuthLayout} /> */}
-      <Route path={`/admin`} component={AdminLayout} />
-      {/* <Route path={`/rtl`} component={RTLLayout} /> */}
-      <Redirect from={`/`} to='/admin/dashboard' />
-    </Switch>
-  </HashRouter>,
-  document.getElementById("root")
-  );
+class LineChart extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      chartData: [],
+      chartOptions: {},
+    };
+  }
+
+  componentDidMount() {
+    const { lineChartData, lineChartOptions } = this.props;
+
+    this.setState({
+      chartData: lineChartData,
+      chartOptions: lineChartOptions,
+    });
+  }
+
+  render() {
+    return (
+      <ReactApexChart
+        options={this.state.chartOptions}
+        series={this.state.chartData}
+        type='area'
+        width='100%'
+        height='100%'
+      />
+    );
+  }
+}
+
+export default LineChart;
