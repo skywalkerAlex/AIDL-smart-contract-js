@@ -46,11 +46,9 @@ import medusa from 'assets/img/cardimgfree.png';
 import Card from 'components/Card/Card.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardHeader from 'components/Card/CardHeader.js';
-import BarChart from 'components/Charts/BarChart';
-import LineChart from 'components/Charts/LineChart';
 import IconBox from 'components/Icons/IconBox';
 // Icons
-import { CartIcon, DocumentIcon, GlobeIcon, RocketIcon, StatsIcon, WalletIcon } from 'components/Icons/Icons.js';
+import { DocumentIcon, WalletIcon } from 'components/Icons/Icons.js';
 import DashboardTableRow from 'components/Tables/DashboardTableRow';
 import TimelineRow from 'components/Tables/TimelineRow';
 import { AiFillCheckCircle } from 'react-icons/ai';
@@ -66,6 +64,31 @@ import { IoCheckmarkDoneCircleSharp, IoEllipsisHorizontal } from 'react-icons/io
 // } from 'variables/charts';
 import { dashboardTableData, timelineData } from 'variables/general';
 
+import idl from '../../smart_contract/idl.js';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+import { Program, Provider, web3 } from '@project-serum/anchor';
+import kp from '../../smart_contract/keypair.json'
+
+// SystemProgram is a reference to the Solana runtime!
+const { SystemProgram } = web3;
+
+// Create a keypair for the account that will hold the GIF data.
+// let baseAccount = Keypair.generate();
+const arr = Object.values(kp._keypair.secretKey)
+const secret = new Uint8Array(arr)
+const baseAccount = web3.Keypair.fromSecretKey(secret)
+
+
+// Get our program's id from the IDL file.
+const programID = new PublicKey(idl.metadata.address);
+
+// Set our network to devnet.
+const network = clusterApiUrl('devnet');
+
+// Controls how we want to acknowledge when a transaction is "done".
+const opts = {
+  preflightCommitment: "processed"
+}
 
 export default function Dashboard() {
 	// ##### Solana Connect to Wallet Start #####
@@ -177,7 +200,6 @@ export default function Dashboard() {
 					</Button>
 				</Flex>
 			</>
-			
 		);
 
 		/*
@@ -304,8 +326,115 @@ export default function Dashboard() {
 	// ##### Rendering Options End #####
 		
 	// ##### Connected Solana Wallet Actions Start #####
+	const onInputChange = (event) => {
+		const { value } = event.target;
+		setInputValue(value);
+	  };
+	
+	  const sendGif = async () => {
+		if (inputValue.length === 0) {
+		  console.log("No gif link given!")
+		  return
+		}
+		setInputValue('');
+		console.log('Gif link:', inputValue);
+		try {
+		  const provider = getProvider();
+		  const program = new Program(idl, programID, provider);
+	  
+		  await program.rpc.addGif(inputValue, {
+			accounts: {
+			  baseAccount: baseAccount.publicKey,
+			  user: provider.wallet.publicKey,
+			},
+		  });
+		  console.log("GIF successfully sent to program", inputValue)
+	  
+		  await getGifList();
+		} catch (error) {
+		  console.log("Error sending GIF:", error)
+		}
+	  };
+	
+	  const upVoteGif = async (gif) => {
+		try {
+		  const provider = getProvider();
+		  const program = new Program(idl, programID, provider);
+	
+		  await program.rpc.upVoteGif(gif, {
+			accounts: {
+			  baseAccount: baseAccount.publicKey,
+			  user: provider.wallet.publicKey,
+			},
+		  });
+		  console.log("GIF successfully deleted from program", gif)
+	
+		  await getGifList();
+		} catch (error) {
+		  console.log("Error deleting GIF:", error)
+		}
+	  };
+	
+	
+	  const getProvider = () => {
+		const connection = new Connection(network, opts.preflightCommitment);
+		const provider = new Provider(
+		  connection, window.solana, opts.preflightCommitment,
+		);
+		return provider;
+	  }
+
+	  const createGifAccount = async () => {
+		try {
+		  const provider = getProvider();
+		  const program = new Program(idl, programID, provider);
+		  console.log("ping")
+		  await program.rpc.startStuffOff({
+			accounts: {
+			  baseAccount: baseAccount.publicKey,
+			  user: provider.wallet.publicKey,
+			  systemProgram: SystemProgram.programId,
+			},
+			signers: [baseAccount]
+		  });
+		  console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
+		  await getGifList();
+	  
+		} catch(error) {
+		  console.log("Error creating BaseAccount account:", error)
+		}
+	  }
 	// ##### Connected Solana Wallet Actions End #####
 
+
+	  /*
+   * When our component first mounts, let's check to see if we have a connected
+   * Phantom Wallet
+   */
+	// UseEffects
+	useEffect(() => {
+		const onLoad = async () => {
+		await checkIfWalletIsConnected();
+		};
+		window.addEventListener('load', onLoad);
+		return () => window.removeEventListener('load', onLoad);
+	}, []);
+	
+	const getGifList = useCallback(async() => {
+		try {
+		const provider = getProvider();
+		const program = new Program(idl, programID, provider);
+		const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+		
+		console.log("Got the account", account)
+		setGifList(account.gifList)
+	
+		} catch (error) {
+		console.log("Error in getGifList: ", error)
+		setGifList(null);
+		}
+	})
+	
 	return (
 		<Flex flexDirection='column' pt={{ base: '120px', md: '75px' }}>
 			<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', '2xl': '1fr 1fr' }} my='26px' gap='18px'>
