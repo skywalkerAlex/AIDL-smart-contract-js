@@ -96,8 +96,14 @@ export default function Dashboard() {
 	// ##### Solana Connect to Wallet Start #####
 		// State
 		const [walletAddress, setWalletAddress] = useState(null);
-		const [inputValue, setInputValue] = useState('');
-		const [gifList, setGifList] = useState([]);
+		const [datasetDetailsObj, setDatasetDetailsObj] = useState([{}]);
+		const [name, setName] = useState('');
+		const [accuracyScore, setAccuracyScore] = useState('');
+		const [dataType, setDataType] = useState('');
+		const [fileType, setFileType] = useState('');
+		const [fileSize, setFileSize] = useState('');
+		const [modelList, setModelList] = useState([]);
+		const [libraryList, setLibraryList] = useState([]);
 		
 		// Actions
 		const checkIfWalletIsConnected = async () => {
@@ -230,119 +236,201 @@ export default function Dashboard() {
 
 		const renderConnectedContainer = () => {
 
-			return (
-			<>
-			{/* <DsDetailsForm /> */}
-				<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
-				{/* Projects */}
-				<Card p='16px' overflowX={{ sm: 'scroll', xl: 'hidden' }}>
-					<CardHeader p='12px 0px 28px 0px'>
-						<Flex direction='column'>
-							<Text fontSize='lg' color='#fff' fontWeight='bold' pb='8px'>
-								Projects
-							</Text>
-							<Flex align='center'>
-								<Icon as={IoCheckmarkDoneCircleSharp} color='teal.300' w={4} h={4} pe='3px' />
-								<Text fontSize='sm' color='gray.400' fontWeight='normal'>
-									<Text fontWeight='bold' as='span'>
-										30 done
-									</Text>{' '}
-									this month.
+			if (datasetDetailsObj.length === 0) {
+				return (
+					<Flex
+						background='transparent'
+						borderRadius='20px'
+						direction='column'
+						p='40px'
+						minW={{ base: "unset", md: "430px", xl: "450px" }}
+						w='100%'
+						mx={{ base: "0px" }}
+						bg={{
+							base: "rgb(19,21,56)",
+						}}
+						boxShadow='dark-lg'
+                    >
+						<Button
+							variant="solid"
+							colorScheme='brand'
+							onClick={createDataseDetailsAccount}
+							>
+								<Text
+									fontSize='2xl'
+									color='purple.200'
+									fontWeight='bold'
+									cursor='pointer'
+									transition='all .3s ease'
+									my={{ sm: '1.5rem', lg: '0px' }}>
+									Do One-Time Initialization For Dataset Details
 								</Text>
-							</Flex>
-						</Flex>
-					</CardHeader>
-					<Table variant='simple' color='#fff'>
-						<Thead>
-							<Tr my='.8rem' ps='0px'>
-								<Th
-									ps='0px'
-									color='gray.400'
-									fontFamily='Plus Jakarta Display'
-									borderBottomColor='#56577A'>
-									Companies
-								</Th>
-								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Members
-								</Th>
-								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Budget
-								</Th>
-								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Completion
-								</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							{dashboardTableData.map((row, index, arr) => {
-								return (
-									<DashboardTableRow
-										name={row.name}
-										logo={row.logo}
-										members={row.members}
-										budget={row.budget}
-										progression={row.progression}
-										lastItem={index === arr.length - 1 ? true : false}
-									/>
-								);
-							})}
-						</Tbody>
-					</Table>
-				</Card>
-				{/* Orders Overview */}
-				<Card>
-					<CardHeader mb='32px'>
-						<Flex direction='column'>
-							<Text fontSize='lg' color='#fff' fontWeight='bold' mb='6px'>
-								Orders overview
-							</Text>
-							<Flex align='center'>
-								<Icon as={AiFillCheckCircle} color='green.500' w='15px' h='15px' me='5px' />
-								<Text fontSize='sm' color='gray.400' fontWeight='normal'>
-									<Text fontWeight='bold' as='span' color='gray.400'>
-										+30%
-									</Text>{' '}
-									this month
+						</Button>
+					  
+					</Flex>
+				  )
+			} else {
+
+				return (
+				<>
+				{/* <DsDetailsForm /> */}
+					<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
+					{/* Projects */}
+					<Card p='16px' overflowX={{ sm: 'scroll', xl: 'hidden' }}>
+						<CardHeader p='12px 0px 28px 0px'>
+							<Flex direction='column'>
+								<Text fontSize='lg' color='#fff' fontWeight='bold' pb='8px'>
+									Projects
 								</Text>
+								<Flex align='center'>
+									<Icon as={IoCheckmarkDoneCircleSharp} color='teal.300' w={4} h={4} pe='3px' />
+									<Text fontSize='sm' color='gray.400' fontWeight='normal'>
+										<Text fontWeight='bold' as='span'>
+											30 done
+										</Text>{' '}
+										this month.
+									</Text>
+								</Flex>
 							</Flex>
-						</Flex>
-					</CardHeader>
-					<CardBody>
-						<Flex direction='column' lineHeight='21px'>
-							{timelineData.map((row, index, arr) => {
-								return (
-									<TimelineRow
-										logo={row.logo}
-										title={row.title}
-										date={row.date}
-										color={row.color}
-										index={index}
-										arrLength={arr.length}
-									/>
-								);
-							})}
-						</Flex>
-					</CardBody>
-				</Card>
-				</Grid>
-			</>
-			);
+						</CardHeader>
+						<Table variant='simple' color='#fff'>
+							<Thead>
+								<Tr my='.8rem' ps='0px'>
+									<Th
+										ps='0px'
+										color='gray.400'
+										fontFamily='Plus Jakarta Display'
+										borderBottomColor='#56577A'>
+										Companies
+									</Th>
+									<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
+										Members
+									</Th>
+									<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
+										Budget
+									</Th>
+									<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
+										Completion
+									</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								{dashboardTableData.map((row, index, arr) => {
+									return (
+										<DashboardTableRow
+											name={row.name}
+											logo={row.logo}
+											members={row.members}
+											budget={row.budget}
+											progression={row.progression}
+											lastItem={index === arr.length - 1 ? true : false}
+										/>
+									);
+								})}
+							</Tbody>
+						</Table>
+					</Card>
+					{/* Orders Overview */}
+					<Card>
+						<CardHeader mb='32px'>
+							<Flex direction='column'>
+								<Text fontSize='lg' color='#fff' fontWeight='bold' mb='6px'>
+									Orders overview
+								</Text>
+								<Flex align='center'>
+									<Icon as={AiFillCheckCircle} color='green.500' w='15px' h='15px' me='5px' />
+									<Text fontSize='sm' color='gray.400' fontWeight='normal'>
+										<Text fontWeight='bold' as='span' color='gray.400'>
+											+30%
+										</Text>{' '}
+										this month
+									</Text>
+								</Flex>
+							</Flex>
+						</CardHeader>
+						<CardBody>
+							<Flex direction='column' lineHeight='21px'>
+								{timelineData.map((row, index, arr) => {
+									return (
+										<TimelineRow
+											logo={row.logo}
+											title={row.title}
+											date={row.date}
+											color={row.color}
+											index={index}
+											arrLength={arr.length}
+										/>
+									);
+								})}
+							</Flex>
+						</CardBody>
+					</Card>
+					</Grid>
+				</>
+				);
+			}
 		}
 	// ##### Rendering Options End #####
 		
 	// ##### Connected Solana Wallet Actions Start #####
-	const onInputChange = (event) => {
+	const onNameChange = (e) => {
+		const value = e.target.value;
+		console.log("onNameChange = ", value);
+		setName(value);
+	};
+
+	const onDataTypeChange = (event) => {
 		const { value } = event.target;
-		setInputValue(value);
-	  };
+		console.log("onDataTypeChange = ", value);
+		setDataType(value);
+	};
+	
+	const onAccuracyScoreChange = (event) => {
+		const { value } = event.target;
+		console.log("onAccuracyScoreChange = ", value);
+		setAccuracyScore(value);
+	};
+	
+	const onFileTypeChange = (event) => {
+		const { value } = event.target;
+		console.log("onFileTypeChange = ", value);
+		setFileType(value);
+	};
+	
+	const onFileSizeChange = (event) => {
+		const { value } = event.target;
+		console.log("onFileSizeChange = ", value);
+		setFileSize(value);
+	};
+
+	const onModelListChange = (event) => {
+		const { value } = event.target;
+		console.log("onModelListChange = ", value);
+		setModelList(value);
+	};
+	
+	const onLibraryListChange = (event) => {
+		const { value } = event.target;
+		console.log("onLibraryListChange = ", value);
+		setLibraryList(value);
+	};
+	
 	
 	  const uploadDatasetDetails = async () => {
-		if (inputValue.length === 0) {
-		  console.log("No gif link given!")
+		if (name.length === 0) {
+		  console.log("No gif Details given!")
 		  return
 		}
-		setInputValue('');
-		console.log('Gif link:', inputValue);
+		let inputValue = {
+			name: name,
+			dataType: dataType,
+			accuracyScore: accuracyScore,
+			fileType: fileType,
+			fileSize: fileSize,
+			modelList: modelList,
+			libraryList: libraryList,
+		}
+		console.log('uploadDatasetDetails :', inputValue);
 		try {
 		  const provider = getProvider();
 		  const program = new Program(idl, programID, provider);
@@ -355,30 +443,30 @@ export default function Dashboard() {
 		  }).rpc();
 		  console.log("GIF successfully sent to program", inputValue)
 	  
-		  await getGifList();
+		  await createDataseDetailsAccount();
 		} catch (error) {
 		  console.log("Error sending GIF:", error)
 		}
 	  };
 	
-	  const upVoteGif = async (gif) => {
-		try {
-		  const provider = getProvider();
-		  const program = new Program(idl, programID, provider);
+	//   const upVoteGif = async (gif) => {
+	// 	try {
+	// 	  const provider = getProvider();
+	// 	  const program = new Program(idl, programID, provider);
 	
-		  await program.rpc.upVoteGif(gif, {
-			accounts: {
-			  baseAccount: baseAccount.publicKey,
-			  user: provider.wallet.publicKey,
-			},
-		  });
-		  console.log("GIF successfully deleted from program", gif)
+	// 	  await program.rpc.upVoteGif(gif, {
+	// 		accounts: {
+	// 		  baseAccount: baseAccount.publicKey,
+	// 		  user: provider.wallet.publicKey,
+	// 		},
+	// 	  });
+	// 	  console.log("GIF successfully deleted from program", gif)
 	
-		  await getGifList();
-		} catch (error) {
-		  console.log("Error deleting GIF:", error)
-		}
-	  };
+	// 	  await getGifList();
+	// 	} catch (error) {
+	// 	  console.log("Error deleting GIF:", error)
+	// 	}
+	//   };
 	
 	
 	  const getProvider = () => {
@@ -389,21 +477,21 @@ export default function Dashboard() {
 		return provider;
 	  }
 
-	  const createGifAccount = async () => {
+	  const createDataseDetailsAccount = async () => {
 		try {
 		  const provider = getProvider();
 		  const program = new Program(idl, programID, provider);
 		  console.log("ping")
-		  await program.rpc.startStuffOff({
+		  await program.methods.initialize({
 			accounts: {
 			  baseAccount: baseAccount.publicKey,
 			  user: provider.wallet.publicKey,
 			  systemProgram: SystemProgram.programId,
 			},
 			signers: [baseAccount]
-		  });
-		  console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
-		  await getGifList();
+		  }).rpc();
+			console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
+			await createDataseDetailsAccount();
 	  
 		} catch(error) {
 		  console.log("Error creating BaseAccount account:", error)
@@ -425,18 +513,19 @@ export default function Dashboard() {
 		return () => window.removeEventListener('load', onLoad);
 	}, []);
 	
-	const getGifList = useCallback(async() => {
+	const getDatasetDetails = useCallback(async() => {
 		try {
-		const provider = getProvider();
-		const program = new Program(idl, programID, provider);
-		const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-		
-		console.log("Got the account", account)
-		setGifList(account.gifList)
+			const provider = getProvider();
+			const program = new Program(idl, programID, provider);
+			const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+			
+			console.log("Got the account", account)
+			setDataType(account.dataType)
+			setDatasetDetailsObj(account.datasetsList)
 	
 		} catch (error) {
-		console.log("Error in getGifList: ", error)
-		setGifList(null);
+			console.log("Error in getDatasetDetails: ", error)
+			setDatasetDetailsObj(null);
 		}
 	})
 	
@@ -582,7 +671,16 @@ export default function Dashboard() {
 			</Grid>
 
 			{walletAddress ? renderConnectedContainer() : renderNotConnectedContainer()}
-			<DsDetailsForm />
+			<DsDetailsForm 
+			    onNameChange = {onNameChange}
+				onAccuracyScoreChange = {onAccuracyScoreChange}
+				onDataTypeChange = {onDataTypeChange}
+				onFileTypeChange = {onFileTypeChange}
+				onFileSizeChange = {onFileSizeChange}
+				onModelListChange = {onModelListChange}
+				onLibraryListChange = {onLibraryListChange}
+				onDataDetailsSubmit = {uploadDatasetDetails}
+			/>
 		</Flex>
 	);
 }
