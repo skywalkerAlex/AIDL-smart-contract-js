@@ -76,7 +76,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - React.js: npx create-react-app aidl-smart-contract-js --use-npm
 - Bootstrap: npm install react-bootstrap bootstrap
 - Web3.js: npm install @project-serum/anchor @solana/web3.js
-
+# As per latest changes you will need also t install the following packages:
+- npm install --save-dev react-app-rewired crypto-browserify stream-browserify assert stream-http https-browserify os-browserify url buffer process
+  - Solution found here: https://github.com/ChainSafe/web3.js#web3-and-create-react-app
+- TypeScript: npm install typescript -g
 ## UI Theme
 - Creative Tim: https://www.creative-tim.com/
   - Vision UI Template: https://www.creative-tim.com/product/vision-ui-dashboard-chakra?_ga=2.212936477.826090309.1660330296-808556419.1660330296#

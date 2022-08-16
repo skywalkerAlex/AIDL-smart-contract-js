@@ -1,0 +1,340 @@
+import React from "react";
+
+// Chakra imports
+import {
+  Flex,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Link,
+  Text,
+  Select,
+  color,
+} from "@chakra-ui/react";
+
+
+// Custom Components
+import GradientBorder from "components/GradientBorder/GradientBorder";
+import {default as MultiSelect } from 'react-select';
+import { SunIcon } from "@chakra-ui/icons";
+import dataProperties from "components/DatasetDetails/DataProperties.json";
+
+function DsDetailsForm() {
+    const titleColor = "white";
+    const textColor = "gray.400";
+
+    const [selectedOption, setSelectedOption] = React.useState(null);
+
+    const dataOptions = (type) => {
+        console.log("type = ", type);
+        console.log("dataProperties[type] = ", dataProperties[type]);
+        return dataProperties[type].map(data => 
+            <option key={data.value} styles={  [{"color": textColor}] } value={data.value}>{data.label}</option>
+        )
+    }
+    // backgroundColor="rgb(19,21,54)" 
+
+
+    const dot = (color = 'transparent') => ({
+        alignItems: 'center',
+        display: 'flex',
+        
+        ':before': {
+            backgroundColor: color,
+            borderRadius: 10,
+            content: '" "',
+            display: 'block',
+            marginRight: 8,
+            height: 10,
+            width: 10,
+        },
+        });
+        
+    const colourStyles = () => {
+        return (
+        {control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+        option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+            const color = data.color;
+            return {
+            ...styles,
+            backgroundColor: isDisabled
+                ? undefined
+                : isSelected
+                ? data.color
+                : isFocused
+                ? color.alpha(0.1).css()
+                : undefined,
+            color: isDisabled
+                ? '#ccc'
+                : isSelected
+                ? color === 'white'
+                ? 'white'
+                : 'black'
+                : data.color,
+            cursor: isDisabled ? 'not-allowed' : 'default',
+        
+            ':active': {
+                ...styles[':active'],
+                backgroundColor: !isDisabled
+                ? isSelected
+                    ? data.color
+                    : color.alpha(0.3).css()
+                : undefined,
+            },
+            };
+        },
+        input: (styles) => ({ ...styles, ...dot() }),
+        placeholder: (styles) => ({ ...styles, ...dot('#ccc') }),
+        singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),}
+        );
+        };
+
+  return (
+    <Flex flexDirection='column' pt={{ base: '120px', md: '75px' }} >
+          <GradientBorder p='2px' me={{ base: "none", sm: '1fr', md: '1fr 1fr', '2xl': '1fr 1fr'}} >
+            <Flex
+              background='transparent'
+              borderRadius='30px'
+              direction='column'
+              p='40px'
+              minW={{ base: "unset", md: "430px", xl: "450px" }}
+              w='100%'
+              mx={{ base: "0px" }}
+              bg={{
+                base: "rgb(19,21,56)",
+              }}
+              boxShadow='dark-lg'
+              >
+              <Text
+                fontSize='3xl'
+                color={titleColor}
+                fontWeight='bold'
+                textAlign='center'
+                mb='22px'>
+                Fill the form below to create new Dataset record
+              </Text>
+              <FormControl>
+                <FormLabel
+                  color={titleColor}
+                  ms='4px'
+                  fontSize='xl'
+                  fontWeight='normal'>
+                  Project name
+                </FormLabel>
+                <GradientBorder
+                  mb='24px'
+                  h='50px'
+                  w={{ base: "100%" }}
+                  borderRadius='20px'>
+                  <Input
+                    color={titleColor}
+                    bg={{
+                      base: "rgb(19,21,54)",
+                    }}
+                    border='transparent'
+                    borderRadius='20px'
+                    fontSize='md'
+                    size='lg'
+                    w={{ base: "100%"}}
+                    maxW='100%'
+                    h='46px'
+                    type='text'
+                    placeholder='Your name'
+                  />
+                </GradientBorder>
+                <FormLabel
+                htmlFor="accuracyScoreId"
+                  color={titleColor}
+                  ms='4px'
+                  fontSize='xl'
+                  fontWeight='normal'>
+                  Accuracy score
+                </FormLabel>
+                <GradientBorder
+                  mb='24px'
+                  h='50px'
+                  w={{ base: "100%"}}
+                  borderRadius='20px'>
+                  <Input
+                    id="accuracyScoreId"
+                    isRequired={true}
+                    color={titleColor}
+                    bg={{
+                      base: "rgb(19,21,54)",
+                    }}
+                    border='transparent'
+                    borderRadius='20px'
+                    fontSize='md'
+                    size='lg'
+                    w={{ base: "100%"}}
+                    maxW='100%'
+                    h='46px'
+                    type='text'
+                    placeholder='Place your accuracy score'
+                  />
+                </GradientBorder>
+                
+                <FormLabel
+                  color={titleColor}
+                  ms='4px'
+                  fontSize='xl'
+                  fontWeight='normal'
+                  htmlFor="dataTypeId">
+                  Data Type and Format
+                </FormLabel>
+                <GradientBorder
+                  mb='24px'
+                  h='50px'
+                  w={{ base: "100%"}}
+                  borderRadius='20px'>
+                <Select 
+                    id="dataTypeId"
+                    isRequired={true}
+                    variant='outline' 
+                    color={textColor}
+                    backgroundColor={{
+                      base: "rgb(19,21,54)",
+                    }}
+                    border='transparent'
+                    borderRadius='20px'
+                    fontSize='md'
+                    size='lg'
+                    w={{ base: "100%"}}
+                    maxW='100%'
+                    h='46px'
+                    placeholder='Select Data Type'
+                    >
+                    {dataOptions("dataType")}
+                </Select>
+                <Select 
+                    isRequired={true}
+                    variant='outline' 
+                    color={textColor}
+                    backgroundColor={{
+                      base: "rgb(19,21,54)",
+                    }}
+                    border='transparent'
+                    borderRadius='20px'
+                    fontSize='md'
+                    size='lg'
+                    w={{ base: "100%"}}
+                    maxW='100%'
+                    h='46px'
+                    placeholder='Select File Type'
+                    >
+                    {dataOptions("fileType")}
+                </Select>
+                </GradientBorder>
+
+                <Flex
+                    background='transparent'
+                    // borderRadius='30px'
+                    direction='column'
+                    p='40px'
+                    minW={{ base: "unset", md: "430px", xl: "450px" }}
+                    w='100%'
+                    mx={{ base: "0px" }}
+                    bg={{
+                        base: "rgb(19,21,56)",
+                    }}
+                    boxShadow='dark-lg'
+                    >
+
+                    
+                    <FormLabel
+                    color={titleColor}
+                    ms='4px'
+                    fontSize='xl'
+                    fontWeight='normal'
+                    htmlfor="modelsId">
+                    Model Type and Libraries
+                    </FormLabel>
+                    <GradientBorder
+                        mb='24px'
+                        h='50px'
+                        w={{ base: "100%"}}
+                        borderRadius='20px'>
+                        <MultiSelect 
+                            id="modelsId"
+                            isRequired={true}
+                            variant='outline' 
+                            color={textColor}
+                            backgroundColor={{
+                            base: "rgb(19,21,54)",
+                            }}
+                            border='transparent'
+                            borderRadius='20px'
+                            fontSize='md'
+                            size='lg'
+                            w={{ base: "100%"}}
+                            maxW='100%'
+                            h='46px'
+                            name="models"
+                            placeholder='Select Data Type'
+                            isMulti
+                            options={dataProperties.models}
+                        />
+                        
+                    <MultiSelect 
+                        variant='outline' 
+                        color={textColor}
+                        backgroundColor={{
+                        base: "rgb(19,21,54)",
+                        }}
+                        border='transparent'
+                        borderRadius='20px'
+                        fontSize='md'
+                        size='lg'
+                        w={{ base: "100%"}}
+                        maxW='100%'
+                        h='46px'
+                        placeholder='Select File Type'
+                        name="libraries"
+                        isMulti
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        styles={colourStyles}
+                        options={dataProperties.libraries}
+                        />
+                    </GradientBorder>
+                </Flex>
+                <Button
+                  variant='brand'
+                  fontSize='md'
+                  type='submit'
+                  w='100%'
+                  maxW='350px'
+                  h='45'
+                  mb='20px'
+                  rightIcon={<SunIcon boxSize={4} />}
+                  mt='20px'
+                  >
+                  Upload Dataset
+                </Button>
+            </FormControl>
+              <Flex
+                flexDirection='column'
+                justifyContent='center'
+                alignItems='center'
+                maxW='100%'
+                mt='0px'>
+                <Text color={textColor} fontWeight='medium'>
+                  Already have an account?
+                  <Link
+                    color={titleColor}
+                    as='span'
+                    ms='5px'
+                    href='#'
+                    fontWeight='bold'>
+                    Sign In
+                  </Link>
+                </Text>
+              </Flex>
+            </Flex>
+          </GradientBorder>
+    </Flex>
+  );
+}
+
+export default DsDetailsForm;

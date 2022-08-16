@@ -25,7 +25,6 @@ import {
 	Flex,
 	Grid,
 	Icon,
-	Progress,
 	SimpleGrid,
 	Spacer,
 	Stack,
@@ -54,7 +53,7 @@ import TimelineRow from 'components/Tables/TimelineRow';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { BiHappy } from 'react-icons/bi';
 import { BsArrowRight } from 'react-icons/bs';
-import { IoCheckmarkDoneCircleSharp, IoEllipsisHorizontal } from 'react-icons/io5';
+import { IoCheckmarkDoneCircleSharp } from 'react-icons/io5';
 // Data
 // import {
 // 	barChartDataDashboard,
@@ -64,10 +63,13 @@ import { IoCheckmarkDoneCircleSharp, IoEllipsisHorizontal } from 'react-icons/io
 // } from 'variables/charts';
 import { dashboardTableData, timelineData } from 'variables/general';
 
-import idl from '../../smart_contract/idl.js';
+import idl from '../../smart_contract/idl.json';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-import { Program, Provider, web3 } from '@project-serum/anchor';
+import { AnchorProvider, Program, web3 } from '@project-serum/anchor';
 import kp from '../../smart_contract/keypair.json'
+import { useEffect } from 'react';
+import { useCallback } from 'react';
+import DsDetailsForm from 'components/DatasetDetails/DatasetForm';
 
 // SystemProgram is a reference to the Solana runtime!
 const { SystemProgram } = web3;
@@ -229,6 +231,8 @@ export default function Dashboard() {
 		const renderConnectedContainer = () => {
 
 			return (
+			<>
+			{/* <DsDetailsForm /> */}
 				<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
 				{/* Projects */}
 				<Card p='16px' overflowX={{ sm: 'scroll', xl: 'hidden' }}>
@@ -320,7 +324,8 @@ export default function Dashboard() {
 						</Flex>
 					</CardBody>
 				</Card>
-			</Grid>
+				</Grid>
+			</>
 			);
 		}
 	// ##### Rendering Options End #####
@@ -331,7 +336,7 @@ export default function Dashboard() {
 		setInputValue(value);
 	  };
 	
-	  const sendGif = async () => {
+	  const uploadDatasetDetails = async () => {
 		if (inputValue.length === 0) {
 		  console.log("No gif link given!")
 		  return
@@ -342,12 +347,12 @@ export default function Dashboard() {
 		  const provider = getProvider();
 		  const program = new Program(idl, programID, provider);
 	  
-		  await program.rpc.addGif(inputValue, {
+		  await program.methods.uploadDatasetDetails(inputValue, {
 			accounts: {
 			  baseAccount: baseAccount.publicKey,
 			  user: provider.wallet.publicKey,
 			},
-		  });
+		  }).rpc();
 		  console.log("GIF successfully sent to program", inputValue)
 	  
 		  await getGifList();
@@ -378,7 +383,7 @@ export default function Dashboard() {
 	
 	  const getProvider = () => {
 		const connection = new Connection(network, opts.preflightCommitment);
-		const provider = new Provider(
+		const provider = new AnchorProvider(
 		  connection, window.solana, opts.preflightCommitment,
 		);
 		return provider;
@@ -577,7 +582,7 @@ export default function Dashboard() {
 			</Grid>
 
 			{walletAddress ? renderConnectedContainer() : renderNotConnectedContainer()}
-			
+			<DsDetailsForm />
 		</Flex>
 	);
 }

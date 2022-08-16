@@ -1,6 +1,6 @@
 {
-  "name": "vision-dashboard-chakra",
-  "version": "1.0.1",
+  "name": "aidl-smart-contract",
+  "version": "0.1.1",
   "private": true,
   "homepage": "https://demos.creative-tim.com/vision-ui-dashboard-chakra/#/",
   "dependencies": {
@@ -15,7 +15,11 @@
     "@fontsource/raleway": "^4.5.0",
     "@fontsource/roboto": "^4.5.0",
     "@project-serum/anchor": "^0.25.0",
+    "@project-serum/borsh": "^0.2.5",
     "@solana/web3.js": "^1.52.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
     "apexcharts": "^3.27.3",
     "classnames": "2.3.1",
     "framer-motion": "^4.1.17",
@@ -33,24 +37,32 @@
     "react-leaflet-semicircle": "^3.0.3",
     "react-router-dom": "5.2.0",
     "react-scripts": "5.0.0",
+    "react-select": "^5.4.0",
     "react-swipeable-views": "0.14.0",
     "react-table": "7.7.0",
     "stylis": "^4.0.10",
-    "stylis-plugin-rtl": "^2.1.0"
+    "stylis-plugin-rtl": "^2.1.0",
+    "web-vitals": "^1.0.1"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
   },
   "target": "web",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && gulp licenses",
-    "test": "react-scripts test --env=jsdom",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build && gulp licenses",
+    "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "npm run build",
     "lint:check": "eslint . --ext=js,jsx;  exit 0",
     "lint:fix": "eslint . --ext=js,jsx --fix;  exit 0",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "optionalDependencies": {
     "@babel/core": "7.14.0",
@@ -58,11 +70,21 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.14.5",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
-    "prettier": "2.2.1"
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "prettier": "2.2.1",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0"
   },
   "browserslist": {
     "production": [
