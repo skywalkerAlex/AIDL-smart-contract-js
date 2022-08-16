@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Chakra imports
 import {
@@ -21,32 +21,63 @@ import {default as MultiSelect } from 'react-select';
 import { SunIcon } from "@chakra-ui/icons";
 import dataProperties from "components/DatasetDetails/DataProperties.json";
 
-function DsDetailsForm(
-    name,
-    accuracyScore,
-    dataType,
-    fileType,
-    fileSize,
-    modelList,
-    librayList,
-    onNameChange,
-    onAccuracyScoreChange,
-    onDataTypeChange,
-    onFileTypeChange,
-    onFileSizeChange,
-    onModelListChange,
-    onLibraryListChange,
-    onDataDetailsSubmit,
-) {
+function DsDetailsForm(props) {
     const titleColor = "white";
     const textColor = "gray.400";
 
     const [showModel, setShowModel] = useState(false);
 
+    const onNameChange = (e) => {
+		const value = e.target.value;
+		props.passName(value);
+	};
+
+	const onDataTypeChange = (event) => {
+		const { value } = event.target;
+		props.passDataType(value);
+	};
+	
+	const onAccuracyScoreChange = (event) => {
+		const { value } = event.target;
+		props.passAccuracyScore(value);
+	};
+	
+	const onFileTypeChange = (event) => {
+		const { value } = event.target;
+		props.passFileType(value);
+	};
+	
+	const onFileSizeChange = (event) => {
+		const { value } = event.target;
+		props.passFileSize(value);
+	};
+
+	const onModelListChange = (event) => {
+		const { value } = event.target;
+		props.passModelList(value);
+	};
+	
+	const onLibraryListChange = (event) => {
+		const { value } = event.target;
+		props.passLibraryList(value);
+	};
+
+    const onDataDetailsSubmit = (event) => {
+        event.preventDefault();
+        props.passDataDetails(true);
+	};
+    
+
     const showModelForm = (event) => {
         console.log("showModel = ", showModel);
         setShowModel(!showModel);
     };
+
+    // UseEffects
+    useEffect(() => {
+
+	}, [setShowModel]);
+
 
     const modelForm = () => {
         return (
@@ -111,40 +142,39 @@ function DsDetailsForm(
                 borderRadius='20px'>
                 <MultiSelect 
                     id="modelsId"
-                    isRequired={true}
-                    variant='outline' 
-                    color={textColor}
-                    backgroundColor={{
-                    base: "rgb(19,21,54)",
-                    }}
-                    border='transparent'
-                    borderRadius='20px'
-                    fontSize='md'
-                    size='lg'
-                    w={{ base: "100%"}}
-                    maxW='100%'
-                    h='46px'
+                    // variant='outline' 
+                    // color={textColor}
+                    // backgroundColor={{
+                    // base: "rgb(19,21,54)",
+                    // }}
+                    // border='transparent'
+                    // borderRadius='20px'
+                    // fontSize='md'
+                    // size='lg'
+                    // w={{ base: "100%"}}
+                    // maxW='100%'
+                    // h='46px'
                     name="models"
-                    placeholder='Select Data Type'
+                    placeholder='Choose your models'
                     isMulti
                     onChange={onModelListChange}
                     options={dataProperties.models}
                 />
                     
                 <MultiSelect 
-                    variant='outline' 
-                    color={textColor}
-                    backgroundColor={{
-                    base: "rgb(19,21,54)",
-                    }}
-                    border='transparent'
-                    borderRadius='20px'
-                    fontSize='md'
-                    size='lg'
-                    w={{ base: "100%"}}
-                    maxW='100%'
-                    h='46px'
-                    placeholder='Select File Type'
+                    // variant='outline' 
+                    // color={textColor}
+                    // backgroundColor={{
+                    // base: "rgb(19,21,54)",
+                    // }}
+                    // border='transparent'
+                    // borderRadius='20px'
+                    // fontSize='md'
+                    // size='lg'
+                    // w={{ base: "100%"}}
+                    // maxW='100%'
+                    // h='46px'
+                    placeholder='Choose your libraries'
                     name="libraries"
                     isMulti
                     className="basic-multi-select"
@@ -181,7 +211,7 @@ function DsDetailsForm(
                         maxW='100%'
                         h='46px'
                         type='text'
-                        onChange={onNameChange}
+                        onChange={onFileSizeChange}
                         placeholder='Data size (MB)'
                     />
                 </GradientBorder>
@@ -190,8 +220,6 @@ function DsDetailsForm(
     }
 
     const dataOptions = (type) => {
-        console.log("type = ", type);
-        console.log("dataProperties[type] = ", dataProperties[type]);
         return dataProperties[type].map(data => 
             <option key={data.value} styles={  [{"color": textColor}] } value={data.value}>{data.label}</option>
         )
@@ -254,7 +282,11 @@ function DsDetailsForm(
         };
 
   return (
-    <Flex flexDirection='column' pt={{ base: '120px', md: '75px' }} >
+    <Flex 
+        flexDirection='column' 
+        pt={{ base: '120px', md: '15px' }}
+        pb={{ base: '120px', md: '15px' }} 
+        >
           <GradientBorder p='2px' me={{ base: "none", sm: '1fr', md: '1fr 1fr', '2xl': '1fr 1fr'}} >
             <Flex
               background='transparent'
@@ -391,7 +423,7 @@ function DsDetailsForm(
                 Upload Dataset
             </Button>
             </FormControl>
-              <Flex
+              {/* <Flex
                 flexDirection='column'
                 justifyContent='center'
                 alignItems='center'
@@ -408,7 +440,7 @@ function DsDetailsForm(
                     Sign In
                   </Link>
                 </Text>
-              </Flex>
+              </Flex> */}
             </Flex>
           </GradientBorder>
     </Flex>

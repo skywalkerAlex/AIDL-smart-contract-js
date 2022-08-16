@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free Chakra - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-chakra
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-chakra/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 // Chakra imports
 import React, { useState } from 'react';
 import {
@@ -39,8 +22,6 @@ import {
 	Thead,
 	Tr
 } from '@chakra-ui/react';
-// Styles for the circular progressbar
-import medusa from 'assets/img/cardimgfree.png';
 // Custom components
 import Card from 'components/Card/Card.js';
 import CardBody from 'components/Card/CardBody.js';
@@ -54,21 +35,17 @@ import { AiFillCheckCircle } from 'react-icons/ai';
 import { BiHappy } from 'react-icons/bi';
 import { BsArrowRight } from 'react-icons/bs';
 import { IoCheckmarkDoneCircleSharp } from 'react-icons/io5';
-// Data
-// import {
-// 	barChartDataDashboard,
-// 	barChartOptionsDashboard,
-// 	lineChartDataDashboard,
-// 	lineChartOptionsDashboard
-// } from 'variables/charts';
-import { dashboardTableData, timelineData } from 'variables/general';
+import medusa from 'assets/img/cardimgfree.png';
 
+import { dashboardTableData, timelineData } from 'variables/general';
+// React
+import { useEffect, useCallback } from 'react';
+
+// Solana imports
 import idl from '../../smart_contract/idl.json';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { AnchorProvider, Program, web3 } from '@project-serum/anchor';
 import kp from '../../smart_contract/keypair.json'
-import { useEffect } from 'react';
-import { useCallback } from 'react';
 import DsDetailsForm from 'components/DatasetDetails/DatasetForm';
 
 // SystemProgram is a reference to the Solana runtime!
@@ -96,7 +73,8 @@ export default function Dashboard() {
 	// ##### Solana Connect to Wallet Start #####
 		// State
 		const [walletAddress, setWalletAddress] = useState(null);
-		const [datasetDetailsObj, setDatasetDetailsObj] = useState([{}]);
+
+		const [storedDatasetDetails, setStoredDatasetDetails] = useState([{}]);
 		const [name, setName] = useState('');
 		const [accuracyScore, setAccuracyScore] = useState('');
 		const [dataType, setDataType] = useState('');
@@ -140,9 +118,10 @@ export default function Dashboard() {
 			const { solana } = window;
 		
 			if (solana) {
-			const response = await solana.connect();
-			console.log('Connected with Public Key:', response.publicKey.toString());
-			setWalletAddress(response.publicKey.toString());
+				const response = await solana.connect();
+				console.log('Connected with Public Key:', response.publicKey.toString());
+				setWalletAddress(response.publicKey.toString());
+				createDataseDetailsAccount();
 			}
 		};
 
@@ -236,7 +215,7 @@ export default function Dashboard() {
 
 		const renderConnectedContainer = () => {
 
-			if (datasetDetailsObj.length === 0) {
+			if (storedDatasetDetails.length === 0) {
 				return (
 					<Flex
 						background='transparent'
@@ -274,7 +253,17 @@ export default function Dashboard() {
 				return (
 				<>
 				{/* <DsDetailsForm /> */}
-					<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
+				<DsDetailsForm 
+					passName = {setName}
+					passAccuracyScore = {setAccuracyScore}
+					passDataType = {setDataType}
+					passFileType = {setFileType}
+					passFileSize = {setFileSize}
+					passModelList = {setModelList}
+					passLibraryList = {setLibraryList}
+					passDataDetails = {uploadDatasetDetails}
+				/>
+				<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
 					{/* Projects */}
 					<Card p='16px' overflowX={{ sm: 'scroll', xl: 'hidden' }}>
 						<CardHeader p='12px 0px 28px 0px'>
@@ -373,101 +362,38 @@ export default function Dashboard() {
 	// ##### Rendering Options End #####
 		
 	// ##### Connected Solana Wallet Actions Start #####
-	const onNameChange = (e) => {
-		const value = e.target.value;
-		console.log("onNameChange = ", value);
-		setName(value);
-	};
-
-	const onDataTypeChange = (event) => {
-		const { value } = event.target;
-		console.log("onDataTypeChange = ", value);
-		setDataType(value);
-	};
-	
-	const onAccuracyScoreChange = (event) => {
-		const { value } = event.target;
-		console.log("onAccuracyScoreChange = ", value);
-		setAccuracyScore(value);
-	};
-	
-	const onFileTypeChange = (event) => {
-		const { value } = event.target;
-		console.log("onFileTypeChange = ", value);
-		setFileType(value);
-	};
-	
-	const onFileSizeChange = (event) => {
-		const { value } = event.target;
-		console.log("onFileSizeChange = ", value);
-		setFileSize(value);
-	};
-
-	const onModelListChange = (event) => {
-		const { value } = event.target;
-		console.log("onModelListChange = ", value);
-		setModelList(value);
-	};
-	
-	const onLibraryListChange = (event) => {
-		const { value } = event.target;
-		console.log("onLibraryListChange = ", value);
-		setLibraryList(value);
-	};
-	
-	
 	  const uploadDatasetDetails = async () => {
 		if (name.length === 0) {
-		  console.log("No gif Details given!")
+		  console.log("Not enough Details given!")
 		  return
 		}
-		let inputValue = {
-			name: name,
-			dataType: dataType,
-			accuracyScore: accuracyScore,
-			fileType: fileType,
-			fileSize: fileSize,
-			modelList: modelList,
-			libraryList: libraryList,
-		}
+		let inputValue =  {
+				name: name,
+				dataType: dataType,
+				accuracyScore: accuracyScore,
+				fileType: fileType,
+				size: fileSize,
+				modelsUsed: modelList,
+				librariesUsed: libraryList,
+			}
 		console.log('uploadDatasetDetails :', inputValue);
 		try {
 		  const provider = getProvider();
 		  const program = new Program(idl, programID, provider);
 	  
-		  await program.methods.uploadDatasetDetails(inputValue, {
+		  await program.rpc.uploadDatasetDetails(inputValue, {
 			accounts: {
 			  baseAccount: baseAccount.publicKey,
 			  user: provider.wallet.publicKey,
 			},
-		  }).rpc();
-		  console.log("GIF successfully sent to program", inputValue)
+		  });
+		  console.log("Dataset Details successfully sent to Blockchain", inputValue)
 	  
 		  await createDataseDetailsAccount();
 		} catch (error) {
-		  console.log("Error sending GIF:", error)
+		  console.log("Error sending Dataset Details :", error)
 		}
 	  };
-	
-	//   const upVoteGif = async (gif) => {
-	// 	try {
-	// 	  const provider = getProvider();
-	// 	  const program = new Program(idl, programID, provider);
-	
-	// 	  await program.rpc.upVoteGif(gif, {
-	// 		accounts: {
-	// 		  baseAccount: baseAccount.publicKey,
-	// 		  user: provider.wallet.publicKey,
-	// 		},
-	// 	  });
-	// 	  console.log("GIF successfully deleted from program", gif)
-	
-	// 	  await getGifList();
-	// 	} catch (error) {
-	// 	  console.log("Error deleting GIF:", error)
-	// 	}
-	//   };
-	
 	
 	  const getProvider = () => {
 		const connection = new Connection(network, opts.preflightCommitment);
@@ -482,14 +408,14 @@ export default function Dashboard() {
 		  const provider = getProvider();
 		  const program = new Program(idl, programID, provider);
 		  console.log("ping")
-		  await program.methods.initialize({
+		  await program.rpc.initialize({
 			accounts: {
 			  baseAccount: baseAccount.publicKey,
 			  user: provider.wallet.publicKey,
 			  systemProgram: SystemProgram.programId,
 			},
 			signers: [baseAccount]
-		  }).rpc();
+		  });
 			console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
 			await createDataseDetailsAccount();
 	  
@@ -507,12 +433,16 @@ export default function Dashboard() {
 	// UseEffects
 	useEffect(() => {
 		const onLoad = async () => {
-		await checkIfWalletIsConnected();
+			await checkIfWalletIsConnected();
 		};
 		window.addEventListener('load', onLoad);
 		return () => window.removeEventListener('load', onLoad);
 	}, []);
 	
+	useEffect(() => {
+
+	}, [setAccuracyScore, setDataType, setFileType, setFileSize, setLibraryList, setModelList, setName]);
+
 	const getDatasetDetails = useCallback(async() => {
 		try {
 			const provider = getProvider();
@@ -521,11 +451,11 @@ export default function Dashboard() {
 			
 			console.log("Got the account", account)
 			setDataType(account.dataType)
-			setDatasetDetailsObj(account.datasetsList)
+			setStoredDatasetDetails(account.datasetsList)
 	
 		} catch (error) {
 			console.log("Error in getDatasetDetails: ", error)
-			setDatasetDetailsObj(null);
+			setStoredDatasetDetails(null);
 		}
 	})
 	
@@ -671,16 +601,7 @@ export default function Dashboard() {
 			</Grid>
 
 			{walletAddress ? renderConnectedContainer() : renderNotConnectedContainer()}
-			<DsDetailsForm 
-			    onNameChange = {onNameChange}
-				onAccuracyScoreChange = {onAccuracyScoreChange}
-				onDataTypeChange = {onDataTypeChange}
-				onFileTypeChange = {onFileTypeChange}
-				onFileSizeChange = {onFileSizeChange}
-				onModelListChange = {onModelListChange}
-				onLibraryListChange = {onLibraryListChange}
-				onDataDetailsSubmit = {uploadDatasetDetails}
-			/>
+			
 		</Flex>
 	);
 }

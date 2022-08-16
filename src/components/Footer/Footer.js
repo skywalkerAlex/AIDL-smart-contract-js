@@ -62,7 +62,7 @@ export default function Footer(props) {
               href='https://github.com/creativetimofficial/vision-ui-dashboard-chakra'
               data-color-scheme="no-preference: light; light: light_high_contrast; dark: dark_dimmed;" 
               data-size="large" 
-              data-show-count="true" 
+              data-show-count="false" 
               aria-label='Star creativetimofficial/vision-ui-dashboard-chakra on GitHub'>
               Follow @creativetimofficial
           </GitHubButton>
@@ -76,7 +76,7 @@ export default function Footer(props) {
               href="https://github.com/skywalkerAlex" 
               data-color-scheme="no-preference: light; light: light_high_contrast; dark: dark_dimmed;" 
               data-size="large" 
-              data-show-count="true" 
+              data-show-count="false" 
               aria-label="Follow @skywalkerAlex on GitHub">
                 Follow @skywalkerAlex
           </GitHubButton>
