@@ -1,5 +1,5 @@
 {
-  "homepage": "https://skywalkeralex.github.io/AIDL-smart-contract-js/",
+  "homepage": "https://skywalkeralex.github.io/AIDL-smart-contract-js",
   "name": "aidl-smart-contract",
   "version": "0.1.1",
   "private": true,
@@ -53,8 +53,8 @@
     "build": "react-app-rewired build && gulp licenses",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
-    "predeploy": "gh-pages -d build",
-    "deploy": "npm run build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "lint:check": "eslint . --ext=js,jsx;  exit 0",
     "lint:fix": "eslint . --ext=js,jsx --fix;  exit 0",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
